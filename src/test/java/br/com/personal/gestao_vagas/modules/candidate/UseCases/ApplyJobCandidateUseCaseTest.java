@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -56,6 +57,7 @@ public class ApplyJobCandidateUseCaseTest {
         var candidate = new CandidateEntity();
         candidate.setId(idCandidate);
 
+        /*Ele retorna o objeto que pode representar qualquer valor, por isso um Optional*/
         when(candidateRepository.findById(idCandidate)).thenReturn(Optional.of(candidate));
 
         try{
@@ -70,13 +72,21 @@ public class ApplyJobCandidateUseCaseTest {
         var idCandidate = UUID.randomUUID();
         var idJob = UUID.randomUUID();
 
+        var applyJob = ApplyJobEntity.builder().candidateID(idCandidate).jobId(idJob).build();
+        var applyJobCreated = ApplyJobEntity.builder().id(UUID.randomUUID()).build();
+
+
         when(candidateRepository.findById(idCandidate)).thenReturn(Optional.of(new CandidateEntity()));
         when(jobRepository.findById(idJob)).thenReturn(Optional.of(new JobEntity()));
-        when(applyJobRepository.save(any(ApplyJobEntity.class))).thenReturn(new ApplyJobEntity());
+        when(applyJobRepository.save(applyJob)).thenReturn(applyJobCreated);
+
 
         var result = applyJobCandidateUseCase.execute(idCandidate, idJob);
 
         assertThat(result).hasFieldOrProperty("id");
+        assertNotNull(result.getId());
+
+
     }
 
 

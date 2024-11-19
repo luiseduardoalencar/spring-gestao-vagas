@@ -35,9 +35,7 @@ public class ApplyJobCandidateUseCase {
             throw new JobNotFoundException();
         });
 
-        var applyJob = ApplyJobEntity.builder()
-                        .candidateID(idCandidate)
-                        .jobId(idJob).build();
+        var applyJob = ApplyJobEntity.builder().candidateID(idCandidate).jobId(idJob).build();
 
         applyJob = applyJobRepository.save(applyJob);
 
