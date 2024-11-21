@@ -18,15 +18,19 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
 
     @Autowired
-    private SecurityFilter securityFilter;
+    private SecurityCompanyFilter securityFilter;
 
     @Autowired
     private SecurityCandidateFilter securityCandidateFilter;
 
-    private static final String[] SWAGGER_LIST = {
+    private static final String[] PERMIT_ALL_LINKS = {
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/swagger-resources/**"
+            "/swagger-resources/**",
+            "/actuator/**",
+            "/actuator/health/**",
+            "/actuator/metrics/**",
+            "/actuator/prometheus/**"
     };
 
     @Bean
@@ -39,7 +43,7 @@ public class SecurityConfig {
                             .requestMatchers("/company/").permitAll()
                             .requestMatchers("/company/job/**").permitAll()
                             .requestMatchers("/company/auth/**").permitAll()
-                            .requestMatchers(SWAGGER_LIST).permitAll();
+                            .requestMatchers(PERMIT_ALL_LINKS).permitAll();
 
                     auth.anyRequest().authenticated();
                 })

@@ -1,6 +1,6 @@
 package br.com.personal.gestao_vagas.modules.company.controllers;
 
-import br.com.personal.gestao_vagas.exceptions.CompanyNotFoundException;
+
 import br.com.personal.gestao_vagas.modules.company.DTO.CreateJobDTO;
 import br.com.personal.gestao_vagas.modules.company.entities.CompanyEntity;
 import br.com.personal.gestao_vagas.modules.company.repositories.CompanyRepository;
@@ -22,9 +22,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
