@@ -1,0 +1,31 @@
+version: '3.8'
+
+networks:
+  gv_network:
+    driver: bridge
+volumes:
+  prometheus_data:
+  grafana_data:
+
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - gv_network
+    ports:
+      - 9090:9090
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    networks:
+      - gv_network
+    ports:
+      - 3000:3000
+
+
+
