@@ -23,8 +23,7 @@ jobs:
             - name: Build Docker Image
               run: docker build -t luiseduardoalencar/gestao_vagas .
             - name: Publish Image
-              run: docker push luiseduardoalencar/gestao_vagas
-    
+              run: docker push luiseduardoalencar/gestao_vagas    
     deploy: 
         needs: build
         runs-on: self-hosted
@@ -32,7 +31,7 @@ jobs:
             - name: Pull image docker hub
               run: docker pull luiseduardoalencar/gestao_vagas:latest
             - name: remove container
-              run: docker  rm -f
+              run: docker rm -f gestao_vagas
             - name: Run docker container gestao-vagas
               run: docker run -d -p 8080:8080 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}} -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} --name gestao-vagas luiseduardoalencar/gestao_vagas
 
