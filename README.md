@@ -1,30 +1,62 @@
-# Plataforma de Gestão de Vagas - Backend
+# Estudo de ferramentas para monitoramento, testes, qualidade e CI/CD - Gestão de Vagas - Backend
 
-Este é o backend de uma plataforma de gestão de vagas, desenvolvido em Spring Boot. A aplicação utiliza PostgreSQL como banco de dados, Prometheus e Grafana para monitoramento, e SonarQube para análise de código.
-
-## Pré-requisitos
-
-Certifique-se de que os seguintes softwares estejam instalados na sua máquina:
-
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Insomnia](https://insomnia.rest/)
+Esta é uma aplicação backend para a gestão de vagas, desenvolvida com o foco na **integração de ferramentas modernas de monitoramento, análise de qualidade de código, identificação de erros**, e automação de processos de build e deploy. 
 
 ---
 
-## Configuração
+## 🛠️ Tecnologias Utilizadas
+
+- **Spring Boot**: Framework principal para o desenvolvimento do backend.
+- **PostgreSQL**: Banco de dados relacional.
+- **SonarQube**: Ferramenta de análise de qualidade de código e identificação de problemas.
+- **Prometheus e Grafana**: Soluções para monitoramento e visualização de métricas em tempo real.
+- **Docker e Docker Compose**: Para containerização e gerenciamento de serviços.
+- **GitHub Actions**: Pipeline CI/CD para automação de build e deploy.
+
+---
+
+## 🌟 Destaques do Projeto
+
+1. **Documentação da API**: Utilizando Swagger, a API possui endpoints documentados de forma clara, facilitando os testes e a integração.  
+   ![Swagger UI](https://github.com/user-attachments/assets/37367e4a-a35d-4350-9161-d8a84b2a62bf)
+   ![Teste de criação de Candidato](https://github.com/user-attachments/assets/dab1422f-ad70-42b3-b47d-62e9af97435e)
+
+2. **Monitoramento**: A aplicação está integrada com Prometheus e Grafana para monitoramento em tempo real. Métricas como uso de CPU, tempo de atividade e requisições HTTP são capturadas e exibidas em painéis interativos.  
+
+
+4. **Análise de Qualidade de Código**: O SonarQube analisa o código, detectando bugs, problemas de segurança e sugerindo melhorias. O dashboard fornece relatórios completos de qualidade.  
+
+
+5. **Testes Automatizados**: A aplicação foi desenvolvida com suporte a testes unitários e de integração. Endpoints como o de cadastro de candidatos foram implementados com validações detalhadas.  
+
+
+6. **Pipeline CI/CD Automatizado**: Com o GitHub Actions, todo o processo de build, testes, e deploy ocorre automaticamente após um push para o branch `main`. Isso reduz erros manuais e acelera o ciclo de entrega.  
+
+
+---
+
+## 🚀 Como Executar a Aplicação
+
+### Pré-requisitos
+
+Certifique-se de ter as seguintes ferramentas instaladas:
+- [Java 17+](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Maven](https://maven.apache.org/)
+- [PostgreSQL](https://www.postgresql.org/)
+
+### Configuração do Banco de Dados
+
+Crie um banco de dados PostgreSQL com as informações de conexão que serão usadas no arquivo `application.properties`.
 
 ### Configuração do `application.properties`
 
-Preencha o arquivo `application.properties` com as informações do banco de dados e outras variáveis necessárias:
+Preencha o arquivo `src/main/resources/application.properties` com as seguintes informações:
 
 ```properties
 # Configuração da aplicação
 spring.application.name=gestao_vagas
-spring.devtools.livereload.enabled=true
-spring.devtools.restart.enabled=true
 
 # Configuração do banco de dados
 spring.datasource.url=jdbc:postgresql://<HOST>:<PORT>/<DATABASE>
@@ -35,9 +67,8 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 spring.jpa.hibernate.ddl-auto=update
 
 # Segurança
-security.token.secret=INSIRA_AQUI_UMA_CHAVE_SECRETA
-security.token.secret.candidate=INSIRA_AQUI_UMA_CHAVE_SECRETA
-token.sonar=<TOKEN_DO_SONARQUBE>
+security.token.secret=<CHAVE_SECRETA>
+token.sonar=<TOKEN_SONARQUBE>
 
 # Endpoints de monitoramento
 management.endpoints.web.exposure.include=health,prometheus,metrics
@@ -48,146 +79,84 @@ management.endpoint.health.show-details=always
 management.endpoint.prometheus.enabled=true
 ```
 
-### Variáveis do banco de dados
-
-Substitua `<HOST>`, `<PORT>`, `<DATABASE>`, `<USUARIO>` e `<SENHA>` com as configurações do seu banco de dados PostgreSQL.
+Substitua `<HOST>`, `<PORT>`, `<DATABASE>`, `<USUARIO>`, `<SENHA>`, `<CHAVE_SECRETA>` e `<TOKEN_SONARQUBE>` pelos valores do seu ambiente.
 
 ---
 
-## Inicialização
+### Inicialização
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/luiseduardoalencar/spring-gestao-vagas
-   cd spring-gestao-vagas
-   ```
-
-2. Suba os serviços do Docker (Prometheus e Grafana):
+1. Suba os serviços de monitoramento com Docker Compose:
    ```bash
    docker-compose up -d
    ```
 
-3. Compile e inicie a aplicação Spring Boot:
+2. Compile e execute a aplicação com Maven:
    ```bash
    ./mvnw clean install
    ./mvnw spring-boot:run
    ```
 
-4. Acesse o Swagger para testar os endpoints da aplicação:
+3. Acesse o Swagger para testar os endpoints:
    ```
    http://localhost:8080/swagger-ui/index.html
    ```
 
+---
 
-## Monitoramento
+## 🔍 Execução da Análise de Qualidade de Código com SonarQube
 
-- Acesse o Prometheus:
+1. Certifique-se de que o SonarQube está em execução:
+   - Acesse `http://localhost:9000` e verifique se o serviço está ativo.
+
+2. Gere um token no painel do SonarQube e configure-o no `application.properties` ou passe-o diretamente no comando abaixo.
+
+3. Execute a análise com Maven:
+   ```bash
+   mvn clean verify sonar:sonar \
+   -Dsonar.projectKey=gestao_vagas \
+   -Dsonar.host.url=http://localhost:9000 \
+   -Dsonar.login=<SEU_TOKEN_SONARQUBE>
+   ```
+
+4. Acompanhe o relatório no painel do SonarQube, em `http://localhost:9000/dashboard?id=gestao_vagas`.
+
+![SonarQube Dashboard](https://github.com/user-attachments/assets/5fcdf466-f19f-46d9-872b-208e72ce9514)
+
+---
+
+## 📊 Monitoramento
+
+- Acesse o painel do **Prometheus** para visualizar métricas:
   ```
   http://localhost:9090
   ```
 
-- Acesse o Grafana:
+- Acesse o painel do **Grafana** para gráficos e visualizações:
   ```
   http://localhost:3000
   ```
-  Login padrão:
+
+  Credenciais padrão:
   - Usuário: `admin`
   - Senha: `admin` (alterar após o primeiro login)
 
+![Painel Grafana](https://github.com/user-attachments/assets/5195002e-8c9a-450f-b4e5-eed843f1c158)
+
 ---
 
-## SonarQube
+## 🚀 Pipeline CI/CD
 
-- Certifique-se de que o SonarQube está rodando no seu ambiente local.
-- Utilize o token configurado no `application.properties` para análise.
+O projeto possui um workflow automatizado de **CI/CD** configurado no GitHub Actions. Toda vez que um `git push` é realizado no branch `main`, o pipeline executa:
 
-Execute a análise do código com o comando:
-```bash
-./mvnw sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=<TOKEN_SONARQUBE>
-```
+1. **Build e Testes**: Compilação da aplicação e execução dos testes automatizados.
+2. **Containerização**: Criação de uma imagem Docker e upload para o Docker Hub.
+3. **Deploy Automatizado**: Início de um novo container no ambiente de produção.
+
+![Git Actions](https://github.com/user-attachments/assets/5a2c7826-c0be-45ad-ae29-26f1c35d00f5)
 ---
 
-## Integração e Deploy Contínuos (CI/CD) com GitHub Actions
+## 🤝 Contribuindo
 
-A aplicação conta com um workflow automatizado de build e deploy utilizando o **GitHub Actions**, configurado no arquivo `.github/workflows/prod.yml`. Esse arquivo define um pipeline que executa os seguintes passos ao realizar um push para o branch `main`:
+Fique à vontade para abrir **issues** ou enviar **pull requests** no repositório para melhorias e sugestões. Feedbacks são sempre bem-vindos!
 
-#### Estrutura do Workflow
-
-1. **Eventos Disparadores**
-   - O workflow é executado automaticamente toda vez que há um `push` para o branch `main`.
-
-2. **Jobs Definidos**
-   - O workflow possui dois jobs principais: `build` e `deploy`.
-
-#### Job: Build
-
-O job `build` é responsável por compilar a aplicação e preparar a imagem Docker. Ele utiliza a máquina virtual do GitHub para executar os seguintes passos:
-
-- **Checkout do Código**
-  - Obtém o código da aplicação do repositório.
-
-- **Configuração do Ambiente Java**
-  - Configura o ambiente com Java 17, utilizando o Temurin como distribuição.
-
-- **Compilação da Aplicação**
-  - Realiza o build da aplicação com o Maven, garantindo que a aplicação está pronta para ser empacotada.
-
-- **Autenticação no Docker Hub**
-  - Faz login no Docker Hub utilizando credenciais armazenadas como secrets no repositório.
-
-- **Build da Imagem Docker**
-  - Constrói a imagem Docker da aplicação, com a tag correspondente ao repositório no Docker Hub.
-
-- **Publicação da Imagem**
-  - Envia a imagem construída para o Docker Hub.
-
-#### Job: Deploy
-
-O job `deploy` depende do `build` para ser executado. Ele realiza o deploy da aplicação utilizando um runner self-hosted (um servidor próprio configurado para rodar ações do GitHub). Os passos executados são:
-
-- **Download da Imagem Docker**
-  - Faz o pull da imagem mais recente da aplicação a partir do Docker Hub.
-
-- **Remoção do Container Anterior**
-  - Remove o container existente para garantir que não há conflitos.
-
-- **Início do Novo Container**
-  - Inicia um novo container da aplicação, configurando as variáveis de ambiente para conexão com o banco de dados.
-
-#### Variáveis de Ambiente
-
-O workflow utiliza secrets do GitHub para armazenar informações sensíveis, como:
-- `DOCKER_USERNAME` e `DOCKER_PASSWORD` (credenciais do Docker Hub)
-- `DATABASE_URL`, `DATABASE_USERNAME` e `DATABASE_PASSWORD` (informações do banco de dados)
-
-Essas variáveis são injetadas no ambiente durante o build e deploy, garantindo segurança e flexibilidade.
-
-#### Benefícios
-
-1. **Automação Total**
-   - Ao realizar um `git push` para o branch `main`, o pipeline cuida de todo o processo de build e deploy automaticamente.
-
-2. **Confiabilidade**
-   - Cada etapa do workflow é isolada e validada, minimizando erros manuais durante o deploy.
-
-3. **Escalabilidade**
-   - A utilização do Docker garante que a aplicação seja executada de forma consistente em qualquer ambiente.
-
-4. **Segurança**
-   - Secrets armazenados no repositório GitHub garantem que informações sensíveis não sejam expostas.
-
-#### Como Usar
-
-1. Faça commit e push das alterações para o branch `main`:
-   ```bash
-   git add .
-   git commit -m "Descrição do commit"
-   git push origin main
-   ```
-
-2. O pipeline será disparado automaticamente, e você poderá acompanhar a execução no GitHub Actions.
-
-3. Após a conclusão, a aplicação estará disponível no ambiente configurado.
-
-Com essa abordagem, você garante agilidade no desenvolvimento, reduzindo o tempo necessário para colocar mudanças em produção!
-
+---
